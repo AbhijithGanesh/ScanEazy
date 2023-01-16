@@ -5,7 +5,7 @@ from pathlib import Path
 from json import loads, dumps
 from uuid import uuid4
 
-from .constants import (
+from constants import (
     ALLOWED_EXTENSIONS,
     CONNECTION_STRING,
     SECRET_KEY,
@@ -16,9 +16,9 @@ from .constants import (
 from flask import Flask, jsonify, redirect, request, session
 from flask_cors import CORS
 from flask_login import LoginManager, UserMixin, login_required, logout_user
-from .logger import logger
-from .models.models import Submissions,User as base
-from .models.utils import db
+from logger import logger
+from models.models import Submissions,User as base
+from models.utils import db
 from werkzeug.datastructures import Headers
 
 app = Flask(__name__)
