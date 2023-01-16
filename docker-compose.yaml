@@ -1,0 +1,13 @@
+version: '3.9'
+services:
+  service_1:
+    build: user-side-service
+    image: test-image-2
+    env_file:
+      - user-side-service/.env
+      - user-side-service/db.env
+  service_2:
+    build: image-processing-service
+    image: test-image-1
+    ports:
+      - 8000:8000
