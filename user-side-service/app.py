@@ -3,6 +3,7 @@ import os
 import requests as _requ
 from pathlib import Path
 from json import loads, dumps
+import time
 from uuid import uuid4
 
 from constants import (
@@ -29,6 +30,7 @@ app.config.update({"SQLALCHEMY_DATABASE_URI": f"{CONNECTION_STRING}"})
 app.config.update({"SECRET_KEY": SECRET_KEY})
 app.config.update({"UPDATE_FOLDER": f"{UPLOAD_FOLDER}"})
 
+time.sleep(5)
 db.init_app(app)
 login_manager.init_app(app)
 
