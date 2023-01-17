@@ -1,24 +1,19 @@
 import datetime
 import os
-import requests as _requ
-from pathlib import Path
-from json import loads, dumps
 import time
+from json import dumps, loads
+from pathlib import Path
 from uuid import uuid4
 
-from constants import (
-    ALLOWED_EXTENSIONS,
-    CONNECTION_STRING,
-    SECRET_KEY,
-    UPLOAD_FOLDER,
-    UPLOAD_SERVICE,
-    UPLOAD_SERVICE_ENDPOINT,
-)
+import requests as _requ
+from constants import (ALLOWED_EXTENSIONS, CONNECTION_STRING, SECRET_KEY,
+                       UPLOAD_FOLDER, UPLOAD_SERVICE, UPLOAD_SERVICE_ENDPOINT)
 from flask import Flask, jsonify, redirect, request, session
 from flask_cors import CORS
 from flask_login import LoginManager, UserMixin, login_required, logout_user
 from logger import logger
-from models.models import Submissions,User as base
+from models.models import Submissions
+from models.models import User as base
 from models.utils import db
 from werkzeug.datastructures import Headers
 
@@ -30,7 +25,6 @@ app.config.update({"SQLALCHEMY_DATABASE_URI": f"{CONNECTION_STRING}"})
 app.config.update({"SECRET_KEY": SECRET_KEY})
 app.config.update({"UPDATE_FOLDER": f"{UPLOAD_FOLDER}"})
 
-time.sleep(5)
 db.init_app(app)
 login_manager.init_app(app)
 

@@ -1,25 +1,15 @@
 version: '3.9'
 services:
-  database:
-    container_name: "AG-corp-DB"
-    image: postgres:latest
-    env_file:
-      - user-side-service/db.env
-    ports:
-      - 5432:5432
-
   service_1:
     container_name: "AG-corp-service-1"
-    image: user-side-service
+    build: user-side-service
     ports:
       - 8001:8001
-    depends_on:
-      - database
     env_file:
       - user-side-service/.env
 
   service_2:
     container_name: "AG-corp-service-2"
-    image: image-processing-service
+    build: image-processing-service
     ports:
       - 8000:8000
