@@ -6,12 +6,7 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent
 SECRET_KEY = os.environ.get("SECRET_KEY")
-ANSWER_KEY = {0: 2, 1: 4, 2: 0, 3: 1, 4: 1}
 UPLOAD_SERVICE = os.environ.get("UPLOAD_SERVICE")
-HOST = os.environ.get("HOST")
-PORT = int(os.environ.get("PORT"))
-USER = os.environ.get("POSTGRES_USER")
-PASSWORD = os.environ.get("POSTGRES_PASSWORD")
 CONNECTION_STRING = os.environ.get("POSTGRES_CONNECTION_STRING")
 SECRET_KEY = os.environ.get("SECRET_KEY")
 ALLOWED_EXTENSIONS = ("txt", "jpg", "png", "tiff")

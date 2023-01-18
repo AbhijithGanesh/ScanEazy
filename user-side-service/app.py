@@ -1,21 +1,18 @@
-import datetime
-import os
-import time
 from json import dumps, loads
-from pathlib import Path
 from uuid import uuid4
 
 import requests as _requ
-from constants import (ALLOWED_EXTENSIONS, CONNECTION_STRING, SECRET_KEY,
-                       UPLOAD_FOLDER, UPLOAD_SERVICE, UPLOAD_SERVICE_ENDPOINT)
 from flask import Flask, jsonify, redirect, request, session
 from flask_cors import CORS
 from flask_login import LoginManager, UserMixin, login_required, logout_user
+from werkzeug.datastructures import Headers
+
+from constants import (ALLOWED_EXTENSIONS, CONNECTION_STRING, SECRET_KEY,
+                       UPLOAD_FOLDER, UPLOAD_SERVICE, UPLOAD_SERVICE_ENDPOINT)
 from logger import logger
 from models.models import Submissions
 from models.models import User as base
 from models.utils import db
-from werkzeug.datastructures import Headers
 
 app = Flask(__name__)
 login_manager = LoginManager()
@@ -83,10 +80,11 @@ def accepted(filename) -> bool:
 def create_submission():
     try:
         _fileObj = request.files.get("file")
+        assigned_unique_id: str = uuid4()
         submission = Submissions(
             user_id=session.get("username"),
             file_name=_fileObj.filename,
-            unique_id=f"{uuid4()}",
+            unique_id=f"{assigned_unique_id}",
         )
         if "file" not in request.files:
             return "No file part"
@@ -98,19 +96,20 @@ def create_submission():
             _req = _requ.post(
                 UPLOAD_SERVICE_ENDPOINT,
                 files={"fileObj": _fileObj},
-                data={"dirname": session["username"], "filename": submission.unique_id},
+                data={"dirname": session["username"],
+                      "filename": submission.unique_id},
             )
             logger.info(_fileObj.filename)
             logger.info(_req.text)
             db.session.add(submission)
             db.session.commit()
-            return "Submission got saved"
+            return {"fileSaved": "Submission got saved", "fileId": assigned_unique_id+".png"}
         else:
             return "Give a proper image file"
 
     except Exception as err:
         logger.error(f"Something broke at :{err}")
-        return {"message":400}
+        return {"message": 400}
 
 
 @login_required
@@ -126,7 +125,7 @@ def get_all_submissions():
 
 
 @login_required
-@app.route("/validate-result")
+@app.route("/validate-result", methods=["POST"])
 def validate_an_image():
     user = session.get("username")
     json_obj = loads(request.data.decode())
