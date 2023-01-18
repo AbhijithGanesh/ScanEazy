@@ -16,7 +16,7 @@ from models.utils import db
 
 app = Flask(__name__)
 login_manager = LoginManager()
-cors = CORS(app, resources={r"/*": {"origins": "*"}})
+# cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
 app.config.update({"SQLALCHEMY_DATABASE_URI": f"{CONNECTION_STRING}"})
 app.config.update({"SECRET_KEY": SECRET_KEY})
