@@ -2,13 +2,13 @@ from json import dumps, loads
 from uuid import uuid4
 
 import requests as _requ
-from flask import Flask, jsonify, redirect, request, session
+from flask import Flask, request, session
 from flask_cors import CORS
 from flask_login import LoginManager, UserMixin, login_required, logout_user
 from werkzeug.datastructures import Headers
 
 from constants import (ALLOWED_EXTENSIONS, CONNECTION_STRING, SECRET_KEY,
-                       UPLOAD_FOLDER, UPLOAD_SERVICE, UPLOAD_SERVICE_ENDPOINT)
+                       UPLOAD_FOLDER, UPLOAD_SERVICE_ENDPOINT)
 from logger import logger
 from models.models import Submissions
 from models.models import User as base
@@ -16,7 +16,7 @@ from models.utils import db
 
 app = Flask(__name__)
 login_manager = LoginManager()
-# cors = CORS(app, resources={r"/*": {"origins": "*"}})
+cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
 app.config.update({"SQLALCHEMY_DATABASE_URI": f"{CONNECTION_STRING}"})
 app.config.update({"SECRET_KEY": SECRET_KEY})
@@ -66,21 +66,12 @@ def create_user():
     head.add("User", data.get("name"))
     return "User got saved"
 
-
-def accepted(filename) -> bool:
-    data = filename.split(".")[-1]
-    if data in ALLOWED_EXTENSIONS:
-        return True
-    else:
-        return False
-
-
 @login_required
 @app.route("/create-submission", methods=["POST"])
 def create_submission():
     try:
         _fileObj = request.files.get("file")
-        assigned_unique_id: str = uuid4()
+        assigned_unique_id: str = str(uuid4())
         submission = Submissions(
             user_id=session.get("username"),
             file_name=_fileObj.filename,
@@ -128,11 +119,12 @@ def get_all_submissions():
 @app.route("/validate-result", methods=["POST"])
 def validate_an_image():
     user = session.get("username")
-    json_obj = loads(request.data.decode())
+    # logger.critical(request.json)
+    json_obj = (request.json)
     process_image_url = UPLOAD_SERVICE_ENDPOINT.replace(
         "/upload-image", "/process-image"
     )
-    logger.critical(request.data.decode())
+    # logger.critical(loads(request.data.decode()))
     _res = _requ.post(
         process_image_url,
         data=dumps(
@@ -143,7 +135,7 @@ def validate_an_image():
             }
         ),
     )
-    return loads(_res.text)
+    return (_res.text)
 
 
 @app.route("/login", methods=["POST"])
@@ -164,4 +156,5 @@ def login():
 @login_required
 @app.route("/logout", methods=["POST"])
 def logout():
+    logout_user()
     return session.get("username")
