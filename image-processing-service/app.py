@@ -1,10 +1,8 @@
 import os
 from pathlib import Path
 from api.constants import SCHEMA_DEFAULTS_PATH
-from uuid import uuid4
-from api.logger import logger
 from json import loads
-from flask import Flask, flash, request, redirect
+from flask import Flask, flash, request
 from api.constants import ALLOWED_EXTENSIONS, UPLOAD_FOLDER, SECRET_KEY
 from api.runner import process_file
 from api.core.file import load_json
@@ -65,7 +63,6 @@ def process_image():
             + json_body.get("filename")
         )
         data = json_body.get("schema")
-        logger.critical(data)
         try:
             return process_file(
                 file_path,

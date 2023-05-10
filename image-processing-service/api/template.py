@@ -117,7 +117,7 @@ def generate_question_block(
             # For diagonal endpoint of QuestionBlock
             pt[_v] += bubble_dimensions[_v] - gaps[_v]
             pt[_h] += bubble_dimensions[_h]
-            traverse_pts.append(([o.copy(), pt.copy()], pts))
+            traverse_pts.append(([o.coOVERRIDE_MERGERpy(), pt.copy()], pts))
             o[_h] += gaps[_h]
     return QuestionBlock(q_block_dims, key, orig, traverse_pts, empty_val)
 

@@ -1,6 +1,5 @@
 import cv2
 import os
-from api import constants
 from api.config import DEFAULT_CONFIG as config
 from api.logger import logger
 from api.core.utilities import (
@@ -18,7 +17,8 @@ def process_omr(template, omr_resp):
     csv_resp = {}
     unmarked_symbol = ""
     for q_no, resp_keys in template.concatenations.items():
-        csv_resp[q_no] = "".join([omr_resp.get(k, unmarked_symbol) for k in resp_keys])
+        csv_resp[q_no] = "".join(
+            [omr_resp.get(k, unmarked_symbol) for k in resp_keys])
     for q_no in template.singles:
         csv_resp[q_no] = omr_resp.get(q_no, unmarked_symbol)
     return csv_resp
@@ -29,8 +29,10 @@ def process_file(file_path: str, json_obj: dict, args) -> tuple:
     template = Organizer(json_obj, curr_dir, PROCESSOR_MANAGER.processors)
 
     in_omr = cv2.imread(str(file_path), cv2.IMREAD_GRAYSCALE)
+
     for i in range(ImageUtils.save_image_level):
         ImageUtils.reset_save_img(i + 1)
+
     ImageUtils.append_save_img(1, in_omr)
     in_omr = ImageUtils.resize_util(
         in_omr,
@@ -48,9 +50,9 @@ def process_file(file_path: str, json_obj: dict, args) -> tuple:
 
     (
         response_dict,
-        final_marked,
+        _,
         multi_marked,
-        multi_roll,
+        _,
     ) = MainOperations.read_response(
         template,
         image=in_omr,
